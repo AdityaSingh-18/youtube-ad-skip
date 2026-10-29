@@ -66,8 +66,8 @@ The project is built with WXT and Manifest V3, with React and TypeScript for the
 - [x] Restrict the content script to YouTube pages.
 - [x] Read the saved Auto Skip preference in the content script and respond when it changes.
 - [x] Attach to the YouTube player and respond to in-site video navigation.
-- [ ] Identify the actual Skip Ads control exposed by YouTube's current player DOM.
-- [ ] Detect that control only while an ad is showing and the button is visible and enabled.
+- [x] Identify the actual Skip Ads control exposed by YouTube's current player DOM.
+- [x] Detect that control only while an ad is showing and the button is visible and enabled.
 
 ### Phase 3 — Automatic Skipping and Activity Tracking ⏳
 

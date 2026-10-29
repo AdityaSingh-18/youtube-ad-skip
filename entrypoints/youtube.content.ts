@@ -1,6 +1,9 @@
 import { browser } from 'wxt/browser';
 import { AUTO_SKIP_KEY, getAutoSkipEnabled } from '../utils/settings';
 
+// Class on the Skip Ads button. 
+const SKIP_BUTTON_SELECTOR = '.ytp-skip-ad-button';
+
 export default defineContentScript({
   matches: ['*://*.youtube.com/*'],
 
@@ -9,6 +12,7 @@ export default defineContentScript({
     let player: HTMLElement | null = null;
     let playerObserver: MutationObserver | null = null;
     let adShowing = false;
+    let skipButtonReady = false;
 
     console.log(`[YouTube Ad Skip] Auto Skip is ${autoSkipEnabled ? 'on' : 'off'}`);
 
@@ -31,6 +35,43 @@ export default defineContentScript({
       console.log(`[YouTube Ad Skip] Ad ${isShowing ? 'started' : 'ended'}`);
     }
 
+    // The button must be on screen, not hidden by CSS.
+    function isVisible(element: HTMLElement): boolean {
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+
+      return (
+        rect.width > 0 &&
+        rect.height > 0 &&
+        style.display !== 'none' &&
+        style.visibility !== 'hidden'
+      );
+    }
+
+    // The button must not be disabled.
+    function isDisabled(element: HTMLElement): boolean {
+      return element.hasAttribute('disabled') || element.getAttribute('aria-disabled') === 'true';
+    }
+
+    function findReadySkipButton(): HTMLElement | null {
+      const buttons = Array.from(document.querySelectorAll<HTMLElement>(SKIP_BUTTON_SELECTOR));
+      return buttons.find((button) => isVisible(button) && !isDisabled(button)) ?? null;
+    }
+
+    // Only look for the button during an ad. Log only when its ready state changes.
+    function checkSkipButton() {
+      const ready = adShowing && findReadySkipButton() !== null;
+      if (ready === skipButtonReady) return;
+
+      skipButtonReady = ready;
+      console.log(`[YouTube Ad Skip] Skip button ${ready ? 'is ready' : 'is gone'}`);
+    }
+
+    function onPlayerChange() {
+      checkAdState();
+      checkSkipButton();
+    }
+
     // Find the player and watch it. This runs again whenever YouTube replaces the player element.
     function attachToPlayer() {
       const current = document.querySelector<HTMLElement>('#movie_player');
@@ -41,7 +82,7 @@ export default defineContentScript({
       adShowing = false;
       if (!player) return;
 
-      playerObserver = new MutationObserver(checkAdState);
+      playerObserver = new MutationObserver(onPlayerChange);
       playerObserver.observe(player, {
         attributes: true,
         attributeFilter: ['class'],
@@ -50,7 +91,7 @@ export default defineContentScript({
       });
 
       console.log('[YouTube Ad Skip] Attached to player');
-      checkAdState();
+      onPlayerChange();
     }
 
     // YouTube changes pages without a reload, so re-check the player when navigation finishes.
@@ -65,6 +106,7 @@ export default defineContentScript({
       subtree: true,
     });
 
+    setInterval(checkSkipButton, 250);
     attachToPlayer();
   },
 });
