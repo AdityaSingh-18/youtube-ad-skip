@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <img src="./assets/banner.png" alt="YouTube Ad Skip banner" width="100%" />
+  <img src="./assets/banner.jpg" alt="YouTube Ad Skip banner" width="100%" />
 </p>
 
 ## Table of Contents
@@ -54,14 +54,14 @@ The project is built with WXT and Manifest V3, with React and TypeScript for the
 
 ## Roadmap
 
-### Phase 1 — Extension Setup and Popup Preferences
+### Phase 1 — Extension Setup and Popup Preferences ✅
 
-- [ ] Configure the WXT project with Manifest V3, extension metadata, and the YouTube content-script entrypoint.
-- [ ] Build the popup interface with React, Tailwind CSS, and Lucide React.
-- [ ] Add the Auto Skip toggle and enabled/disabled status.
-- [ ] Save and restore the user's preference with `chrome.storage.local`.
+- [x] Configure the WXT project with Manifest V3, extension metadata, and the YouTube content-script entrypoint.
+- [x] Build the popup interface with React, Tailwind CSS, and Lucide React.
+- [x] Add the Auto Skip toggle and enabled/disabled status.
+- [x] Save and restore the user's preference with `chrome.storage.local`.
 
-### Phase 2 — YouTube Player Integration and Detection
+### Phase 2 — YouTube Player Integration and Detection ⏳
 
 - [ ] Restrict the content script to YouTube pages.
 - [ ] Read the saved Auto Skip preference in the content script and respond when it changes.
@@ -69,14 +69,14 @@ The project is built with WXT and Manifest V3, with React and TypeScript for the
 - [ ] Identify the actual Skip Ads control exposed by YouTube's current player DOM.
 - [ ] Detect that control only while an ad is showing and the button is visible and enabled.
 
-### Phase 3 — Automatic Skipping and Activity Tracking
+### Phase 3 — Automatic Skipping and Activity Tracking ⏳
 
 - [ ] Click the detected Skip Ads control only when Auto Skip is enabled.
 - [ ] Prevent duplicate clicks and avoid interacting with unrelated player controls.
 - [ ] Track successful skip-button actions.
 - [ ] Display the activity count in the popup.
 
-### Phase 4 — Runtime Reliability and Popup Feedback
+### Phase 4 — Runtime Reliability and Popup Feedback ⏳
 
 - [ ] Keep the popup's preference and activity information synchronized with the content script.
 - [ ] Handle missing players, unavailable controls, and storage errors without disrupting the page.
